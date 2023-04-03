@@ -112,7 +112,7 @@ pub fn download_list(pathname: &str, dir: &str, filename: Option<String>, id: Op
     let metadata = entry.metadata().unwrap();
     if metadata.is_file() {
       let file_path = entry.path().display().to_string();
-      let re = Regex::new(r"(?P<id>[\d\w]+).(?P<ext>\w+)$").unwrap();
+      let re = Regex::new(r"(?P<id>[\d\w\s.]+).(?P<ext>\w+)$").unwrap();
       let caps = re.captures(&file_path).unwrap();
       let fid = &caps["id"];
       let fext = &caps["ext"];

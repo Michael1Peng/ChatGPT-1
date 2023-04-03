@@ -29,6 +29,24 @@ async function init() {
     }
   }, 1000);
 
+  
+  if (window.autosaveInterval) {
+    clearInterval(window.autosaveInterval);
+  }
+  
+  let hasNewConversation = false;
+  
+  window.autosaveInterval = setInterval(() => {
+    const finishedConversation = document.querySelector("form button>svg");
+
+    if (finishedConversation && hasNewConversation) {
+      hasNewConversation = false;
+      exportMarkdown();
+    } else if (shouldRemoveButtons()) {
+      hasNewConversation = true;
+    }
+  }, 1000);
+
   const Format = {
     PNG: "png",
     PDF: "pdf",
@@ -154,7 +172,13 @@ async function init() {
     }).join('');
     const data = ExportMD.turndown(content);
     const { id, filename } = getName();
-    await invoke('save_file', { name: `notes/${id}.md`, content: data });
+    debugger;
+
+    if(filename === 'New chat') {
+      return;
+    }
+    
+    await invoke('save_file', { name: `notes/${filename}.md`, content: data });
     await invoke('download_list', { pathname: 'chat.notes.json', filename, id, dir: 'notes' });
   }
 
